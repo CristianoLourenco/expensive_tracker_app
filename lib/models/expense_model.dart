@@ -7,7 +7,7 @@ const uuid = Uuid();
 // work with enum is a safety wey to make sure that we wont get the rong values
 enum Category { food, travel, leisure, work }
 
-final _formatter = DateFormat.yMd();
+final formatter = DateFormat.yMd();
 
 const _categoryIcons = <Category, IconData>{
   Category.food: Icons.lunch_dining,
@@ -35,6 +35,6 @@ class ExpenseModel {
   }
 
   String get formatedDate {
-    return _formatter.format(date);
+    return formatter.format(date);
   }
 }

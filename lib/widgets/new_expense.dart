@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:expensive_tracker_app/models/expense_model.dart';
 
 class NewExpense extends StatefulWidget {
   const NewExpense({super.key});
@@ -10,6 +11,24 @@ class NewExpense extends StatefulWidget {
 class _NewExpenseState extends State<NewExpense> {
   final _titleController = TextEditingController();
   final _amountController = TextEditingController();
+  DateTime? _selectedDate;
+  Category _selectedCategory = Category.leisure;
+
+  void _onDateTimePickerPressed() async {
+    // TODO: dateTimePicker
+    final now = DateTime.now();
+    final firstDate = DateTime(now.year - 1, now.month, now.day);
+    final pickedDate = await showDatePicker(
+      context: context,
+      initialDate: now,
+      firstDate: firstDate,
+      lastDate: now,
+    );
+
+    setState(() {
+      _selectedDate = pickedDate;
+    });
+  }
 
   @override
   void dispose() {
@@ -31,16 +50,64 @@ class _NewExpenseState extends State<NewExpense> {
               label: Text('Title'),
             ),
           ),
-          TextField(
-            controller: _amountController,
-            keyboardType: TextInputType.number,
-            decoration: const InputDecoration(
-              prefixText: '\$ ',
-              label: Text('Amount'),
-            ),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _amountController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    prefixText: '\$ ',
+                    label: Text('Amount'),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                flex: 2,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      _selectedDate == null
+                          ? 'No date selected'
+                          : formatter.format(
+                              _selectedDate!,
+                            ),
+                    ),
+                    IconButton(
+                      onPressed: _onDateTimePickerPressed,
+                      icon: const Icon(Icons.calendar_month),
+                    )
+                  ],
+                ),
+              )
+            ],
           ),
+          const SizedBox(height: 16),
           Row(
             children: <Widget>[
+              DropdownButton(
+                value: _selectedCategory,
+                items: Category.values
+                    .map(
+                      (category) => DropdownMenuItem(
+                        value: category,
+                        child: Text(category.name.toUpperCase()),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (value) {
+                  if (value == null) {
+                    return;
+                  }
+                  setState(() {
+                    _selectedCategory = value;
+                  });
+                },
+              ),
+              const Spacer(),
               TextButton(
                 onPressed: () => Navigator.pop(context),
                 child: const Text('Cancel'),
