@@ -29,6 +29,7 @@ class _ExpensesState extends State<Expenses> {
     ),
   ];
 
+// ! Methods
   void _addExpense(ExpenseModel model) {
     setState(() {
       _registeredExpenses.add(model);
@@ -39,12 +40,22 @@ class _ExpensesState extends State<Expenses> {
     showModalBottomSheet(
       isScrollControlled: true,
       context: context,
-      builder: (ctx) => NewExpense(onAddExpense: _addExpense),
+      builder: (ctx) =>
+          NewExpense(onAddExpense: _addExpense),
     );
+  }
+
+  void _removeExpense(ExpenseModel model) {
+    setState(() {
+      _registeredExpenses.remove(model);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    // Widget = mainContent = const Center(child: Text('No expenses'),)
+
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Flutter ExpenseTracker'),
@@ -56,10 +67,13 @@ class _ExpensesState extends State<Expenses> {
         ],
       ),
       body: Column(
-        children: [
+        children: <Widget>[
           const Text('The chart '),
           Expanded(
-            child: ExpensesList(expenses: _registeredExpenses),
+            child: ExpensesList(
+              expenses: _registeredExpenses,
+              onRemoveExpense: _removeExpense,
+            ),
           ),
         ],
       ),

@@ -1,4 +1,5 @@
 {
-    "dart.lineLength": 100,
-    "dart.offline": true
+  "dart.lineLength": 60,
+  "dart.offline": true,
+  "dart.enableCompletionCommitCharacters": true
 }
