@@ -9,7 +9,7 @@ enum Category { food, travel, leisure, work }
 
 final formatter = DateFormat.yMd();
 
-const _categoryIcons = <Category, IconData>{
+const categoryIcons = <Category, IconData>{
   Category.food: Icons.lunch_dining,
   Category.travel: Icons.flight_takeoff,
   Category.leisure: Icons.movie,
@@ -31,10 +31,34 @@ class ExpenseModel {
   final Category category;
 
   IconData get getCategoryIcon {
-    return _categoryIcons[category] ?? Icons.warning;
+    return categoryIcons[category] ?? Icons.warning;
   }
 
   String get formatedDate {
     return formatter.format(date);
+  }
+}
+
+class ExpenseBucketModel {
+  final Category category;
+  final List<ExpenseModel> expenseList;
+
+  ExpenseBucketModel({
+    required this.category,
+    required this.expenseList,
+  });
+
+  ExpenseBucketModel.forCategory(
+      List<ExpenseModel> allExpenses, this.category)
+      : expenseList = allExpenses
+            .where((expnse) => expnse.category == category)
+            .toList();
+
+  double get totalExpenses {
+    double sum = 0;
+    for (var expenseModel in expenseList) {
+      sum += expenseModel.amount; //sum = sum +model.amount
+    }
+    return sum;
   }
 }
