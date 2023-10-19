@@ -76,7 +76,7 @@ class _ExpensesState extends State<Expenses> {
       );
     } else {
       mainContent = const Center(
-        child: Text('No expenses to Show found!'),
+        child: Text('No expenses found!'),
       );
     }
 
