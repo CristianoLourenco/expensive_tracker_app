@@ -1,3 +1,4 @@
+import 'package:expensive_tracker_app/mock/expenses_list_mock.dart';
 import 'package:expensive_tracker_app/models/expense_model.dart';
 import 'package:expensive_tracker_app/widgets/chart/chart.dart';
 import 'package:expensive_tracker_app/widgets/new_expense.dart';
@@ -15,65 +16,14 @@ class Expenses extends StatefulWidget {
 }
 
 class _ExpensesState extends State<Expenses> {
-  final List<ExpenseModel> _registeredExpenses = [
-    ExpenseModel(
-      title: 'Flutter Course',
-      date: DateTime.now(),
-      amount: 19.99,
-      category: Category.work,
-    ),
-    ExpenseModel(
-      title: 'Cinema',
-      date: DateTime.now(),
-      amount: 15.87,
-      category: Category.leisure,
-    ),
-  ];
-
-// ! Methods
-  void _addExpense(ExpenseModel model) {
-    setState(() {
-      _registeredExpenses.add(model);
-    });
-  }
-
-  void _addExpenses() {
-    showModalBottomSheet(
-      useSafeArea: true,
-      isScrollControlled: true,
-      context: context,
-      builder: (ctx) =>
-          NewExpense(onAddExpense: _addExpense),
-    );
-  }
-
-  void _removeExpense(ExpenseModel model) {
-    final expenseIndex = _registeredExpenses.indexOf(model);
-    setState(() {
-      _registeredExpenses.remove(model);
-    });
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        duration: const Duration(seconds: 3),
-        content: const Text('Expense deleted'),
-        action: SnackBarAction(
-          label: 'Undo',
-          onPressed: () => setState(() {
-            _registeredExpenses.insert(expenseIndex, model);
-          }),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     late Widget mainContent;
-    if (_registeredExpenses.isNotEmpty) {
+
+    if (expensesListMock.isNotEmpty) {
       mainContent = ExpensesList(
-        expenses: _registeredExpenses,
+        expenses: expensesListMock,
         onRemoveExpense: _removeExpense,
       );
     } else {
@@ -95,19 +45,57 @@ class _ExpensesState extends State<Expenses> {
       body: width < 600
           ? Column(
               children: <Widget>[
-                Chart(expenses: _registeredExpenses),
+                Chart(expenses: expensesListMock),
                 Expanded(child: mainContent),
               ],
             )
           : Row(
               children: <Widget>[
                 Expanded(
-                  child:
-                      Chart(expenses: _registeredExpenses),
+                  child: Chart(expenses: expensesListMock),
                 ),
                 Expanded(child: mainContent),
               ],
             ),
     );
   }
+
+// ! Methods
+  void _addExpense(ExpenseModel model) {
+    setState(() {
+      expensesListMock.add(model);
+    });
+  }
+
+  void _addExpenses() {
+    showModalBottomSheet(
+      useSafeArea: true,
+      isScrollControlled: true,
+      context: context,
+      builder: (ctx) =>
+          NewExpense(onAddExpense: _addExpense),
+    );
+  }
+
+  void _removeExpense(ExpenseModel model) {
+    final expenseIndex = expensesListMock.indexOf(model);
+    setState(() {
+      expensesListMock.remove(model);
+    });
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        duration: const Duration(seconds: 3),
+        content: const Text('Expense deleted'),
+        action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () => setState(() {
+            expensesListMock.insert(expenseIndex, model);
+          }),
+        ),
+      ),
+    );
+  }
+
+
 }
